@@ -33,9 +33,9 @@ if ($usuario) {
 
         // Redirigir según el rol
         if ($_SESSION['usuario_rol'] == 'Cajero') {
-            header("Location: " . $URL . "vistas/index.php");
+            header("Location: " . $URL . "/vistas/index.php");
         } else {
-            header("Location: " . $URL . "vistas/index.php");
+            header("Location: " . $URL . "/vistas/index.php");
         }
         exit();
     } else {
