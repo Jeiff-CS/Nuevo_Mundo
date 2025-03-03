@@ -11,7 +11,7 @@ include ('../vistas/layout/parte1.php');?>
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-12">
-            <h1 class="m-0">Bienvenido a Nuevo Mundo</h1>
+            <h1 class="m-0">Bienvenido a Nuevo Mundo - <?php echo $usuario_rol?></h1>
           </div><!-- /.col -->
         </div><!-- /.row -->
       </div><!-- /.container-fluid -->
@@ -34,7 +34,7 @@ include ('../vistas/layout/parte1.php');?>
               <div class="inner">
                 <h3>4</h3>
 
-                <p>User Registrations</p>
+                <p>Usuaruios Registrados</p>
               </div>
               <div class="icon">
                 <i class="fas fa-user-plus"></i>

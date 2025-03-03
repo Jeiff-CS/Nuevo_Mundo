@@ -13,7 +13,7 @@ if (empty($email) || empty($password_user)) {
 
 $sql = "SELECT u.id, u.nombre, u.email, u.password, u.rol_id, u.tienda_id, r.nombre AS rol 
         FROM usuarios u 
-        JOIN roles r ON u.rol_id = r.rol_id 
+        JOIN roles r ON u.rol_id = r.id 
         WHERE u.email = :email";
 
 $query = $pdo->prepare($sql);

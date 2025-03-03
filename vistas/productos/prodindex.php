@@ -3,7 +3,7 @@
 include ('../../recursos/bd.php');
 include ('../../vistas/layout/sesion.php');
 include ('../../vistas/layout/parte1.php');
-include ('../../recursos/controllers/categorias/list_categoria_controllers.php');
+include ('../../recursos/controllers/productos/list_products_controller.php');
 ?>
 
   <!-- Content Wrapper. Contains page content -->
@@ -13,7 +13,7 @@ include ('../../recursos/controllers/categorias/list_categoria_controllers.php')
       <div class="container-fluid">
         <div class="row mb-2">  
           <div class="col-sm-12">
-            <h1 class="m-0">Listado de Categorías
+            <h1 class="m-0">Listado de Productos
               <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modal-create">
                 <i class="fa fa-plus"></i> Nuevo
               </button>
@@ -32,7 +32,7 @@ include ('../../recursos/controllers/categorias/list_categoria_controllers.php')
         <div class="col-md-10">
           <div class="card card-outline card-primary">
           <div class="card-header">
-            <h3 class="card-title">Categorías Registradas</h3>
+            <h3 class="card-title">Productos Registrados</h3>
 
             <div class="card-tools">
               <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i>
