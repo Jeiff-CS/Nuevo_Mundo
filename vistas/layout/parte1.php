@@ -184,7 +184,7 @@
               </ul>
           </li>
 
-          <?php if ($usuario_rol === "Cajero") { ?> 
+          <?php if ($usuario_rol === "Administrador") { ?> 
           <!-- CATEGORÍAS -->
           <li class="nav-item">
               <a href="#" class="nav-link ">
@@ -219,7 +219,7 @@
                       </a>
                   </li>
                   <li class="nav-item">
-                      <a href="<?php echo $URL; ?>/vistas/categorias/createprod.php" class="nav-link <?php echo (strpos($current_page, 'categorias/index.php') !== false) ? 'active' : ''; ?>">
+                      <a href="<?php echo $URL; ?>/vistas/productos/createprod.php" class="nav-link <?php echo (strpos($current_page, 'categorias/index.php') !== false) ? 'active' : ''; ?>">
                           <i class="far fa-circle nav-icon"></i>
                           <p>Gestion de Productos</p>
                       </a>

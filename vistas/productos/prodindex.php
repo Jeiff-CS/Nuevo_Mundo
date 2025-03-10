@@ -1,9 +1,23 @@
 <?php
-
 include ('../../recursos/bd.php');
 include ('../../vistas/layout/sesion.php');
 include ('../../vistas/layout/parte1.php');
 include ('../../recursos/controllers/productos/list_products_controller.php');
+
+if (isset($_SESSION['mensaje'])) {
+  echo "<script>
+      document.addEventListener('DOMContentLoaded', function() {
+          Swal.fire({
+              title: '¡Éxito!',
+              text: '" . $_SESSION['mensaje'] . "',
+              icon: '" . $_SESSION['mensaje_tipo'] . "',
+              confirmButtonText: 'OK'
+          });
+      });
+  </script>";
+  unset($_SESSION['mensaje']); // Borra el mensaje para que no se repita
+  unset($_SESSION['mensaje_tipo']);
+}
 ?>
 
   <!-- Content Wrapper. Contains page content -->
@@ -75,8 +89,8 @@ include ('../../recursos/controllers/productos/list_products_controller.php');
                         <td><?php echo $productos['stock'] ?></td>
                         <td><?php echo $productos['stock_min'] ?></td>
                         <td><?php echo $productos['stock_max'] ?></td>
-                        <td><?php echo "S/." . $productos['precio_compra'],2 ?></td>
-                        <td><?php echo "S/." . $productos['precio_venta'],2 ?></td>
+                        <td><?php echo "S/." . $productos['precio_compra'] ?></td>
+                        <td><?php echo "S/." . $productos['precio_venta'] ?></td>
                         <td><?php echo $productos['fecha_ingreso'] ?></td>
                         <td><?php echo $productos['usuario_email']; ?>
                         <td>

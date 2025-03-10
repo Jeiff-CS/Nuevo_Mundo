@@ -1,5 +1,5 @@
 <?php 
-session_start();
+session_start();  // Debe estar al inicio del archivo
 include ('../../bd.php');
 
 $email = $_POST['email'];
@@ -32,22 +32,18 @@ if ($usuario) {
         echo "Datos correctos";
 
         // Redirigir según el rol
-        if ($_SESSION['usuario_rol'] == 'Cajero') {
-            header("Location: " . $URL . "/vistas/index.php");
-        } else {
-            header("Location: " . $URL . "/vistas/index.php");
-        }
+        header("Location: " . $URL . "/vistas/index.php");
         exit();
     } else {
         echo "Contraseña incorrecta.";
         session_start();
-        $_SESSION['mensaje'] = "Error! Datos incorrectos";
+        $_SESSION['mensaje'] = "❌ Error! Datos incorrectos";
         header('Location: '. $URL . '/vistas/login/index.php') ;
     }
 }  else {
     echo "Usuario no existe";
     session_start();
-    $_SESSION['msj_noexiste'] = "Error! Usuario no encontrado";
+    $_SESSION['msj_noexiste'] = "❌ Error! Usuario no encontrado";
     header('Location: '. $URL . '/vistas/login/index.php') ;
 }
 ?>
