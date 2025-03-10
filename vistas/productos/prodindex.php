@@ -29,7 +29,7 @@ include ('../../recursos/controllers/productos/list_products_controller.php');
       <div class="container-fluid">
 
       <div class="row">
-        <div class="col-md-10">
+        <div class="col-md-12">
           <div class="card card-outline card-primary">
           <div class="card-header">
             <h3 class="card-title">Productos Registrados</h3>
@@ -47,25 +47,55 @@ include ('../../recursos/controllers/productos/list_products_controller.php');
                   <thead>
                     <tr>  
                       <th style="width: 10px">Nro</th>
+                      <th>Codigo</th>
+                      <th>Categoria</th>
                       <th>Nombre</th>
                       <th>Descripcion</th>
+                      <th>Imagen</th>
+                      <th>Stock</th>
+                      <th>Stock min</th>
+                      <th>Stock max</th>
+                      <th>Precio Compra</th>
+                      <th>Precio Venta</th>
+                      <th>Fecha Compra</th>
+                      <th>Usuario</th>
                       <th>Acciones</th>
                     </tr>
                   </thead>
                   <tbody>
                     <?php 
-                    foreach($categorias_datos as $categoria){?>
+                    foreach($productos_datos as $productos){?>
                       <tr>
-                        <td><?php echo $categoria['id'] ?></td>
-                        <td><?php echo $categoria['nombre'] ?></td>
-                        <td><?php echo $categoria['descripcion'] ?></td>
+                        <td><?php echo $productos['id'] ?></td>
+                        <td><?php echo $productos['codigo_saco'] ?></td>
+                        <td><?php echo $productos['categoria_nombre'] ?></td>
+                        <td><?php echo $productos['nombre'] ?></td>
+                        <td><?php echo $productos['descripcion'] ?></td>
+                        <td><img src="<?php echo $productos['imagen'] ?>" width="50px"></td>
+                        <td><?php echo $productos['stock'] ?></td>
+                        <td><?php echo $productos['stock_min'] ?></td>
+                        <td><?php echo $productos['stock_max'] ?></td>
+                        <td><?php echo "S/." . $productos['precio_compra'],2 ?></td>
+                        <td><?php echo "S/." . $productos['precio_venta'],2 ?></td>
+                        <td><?php echo $productos['fecha_ingreso'] ?></td>
+                        <td><?php echo $productos['usuario_email']; ?>
                         <td>
                           <center>
                             <button type="button" class="btn bg-success btn-sm btn-edit" 
-                              data-id="<?php echo $categoria['id']; ?>" 
-                              data-nombre="<?php echo $categoria['nombre']; ?>" 
-                              data-descripcion="<?php echo $categoria['descripcion']; ?>">
-                              <i class="fas fa-edit"></i>
+                              data-id="<?php echo $productos['id']; ?>" 
+                              data-codigo_saco="<?php echo $productos['codigo_saco']; ?>" 
+                              data-categoria="<?php echo $productos['categoria_nombre']; ?>" 
+                              data-nombre="<?php echo $productos['nombre']; ?>"
+                              data-descripcion="<?php echo $productos['descripcion']; ?>"
+                              data-imagen="<?php echo $productos['imagen']; ?>"
+                              data-stock="<?php echo $productos['stock']; ?>"
+                              data-stock_min="<?php echo $productos['stock_min']; ?>"
+                              data-stock_max="<?php echo $productos['stock_max']; ?>"
+                              data-precio_compra="<?php echo $productos['precio_compra']; ?>"
+                              data-precio_venta="<?php echo $productos['precio_venta']; ?>"
+                              data-fecha_ingreso="<?php echo $productos['fecha_ingreso']; ?>"
+                              data-usuario_email="<?php echo $productos['usuario_email']; ?>">
+                              <i class="fa fa-pencil-alt"></i>
                             </button>
                           </center>
                         </td>
@@ -75,6 +105,21 @@ include ('../../recursos/controllers/productos/list_products_controller.php');
                     ?>
                   </tbody>
                 </table>
+                <script>
+                  $(document).on("click", ".btn-edit", function () {
+                      var id = $(this).data("id");
+                      var nombre = $(this).data("nombre");
+                      var descripcion = $(this).data("descripcion");
+
+                      // Llenar los campos del modal
+                      $("#edit_id").val(id);
+                      $("#edit_nombre").val(nombre);
+                      $("#edit_descripcion").val(descripcion);
+
+                      // Mostrar el modal
+                      $("#modal-edit").modal("show");
+                  });
+                </script>
               <!-- /.card-body -->
           </div>
           </div>
@@ -99,9 +144,9 @@ include ('../../vistas/layout/parte2.php');
           language: {
               "emptyTable": "No hay información",
               "decimal": "",
-              "info": "Mostrando _START_ a _END_ de _TOTAL_ Categorías",
-              "infoEmpty": "Mostrando 0 a 0 de 0 Categorías",
-              "infoFiltered": "(Filtrado de _MAX_ total Categorías)",
+              "info": "Mostrando _START_ a _END_ de _TOTAL_ Productos",
+              "infoEmpty": "Mostrando 0 a 0 de 0 Productos",
+              "infoFiltered": "(Filtrado de _MAX_ total Productos)",
               "infoPostFix": "",
               "thousands": ",",
               "lengthMenu": "Mostrar _MENU_ ",

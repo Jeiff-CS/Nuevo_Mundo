@@ -111,9 +111,8 @@
           <!-- Add icons to the links using the .nav-icon class
                with font-awesome or any other icon font library -->
           <!-- USUARIOS -->
-          <li class="nav-item <?php echo (strpos($_SERVER['REQUEST_URI'], '/usuarios/') !== false) ? 'menu-open' : ''; ?>">
-              <a href="#" class="nav-link <?php echo (strpos($_SERVER['REQUEST_URI'], '/usuarios/') !== false) ? 'active' : ''; ?>">
-
+          <li class="nav-item">
+              <a href="#" class="nav-link ">
                   <i class="nav-icon fas fa-users"></i>
                   <p>
                       Usuarios
@@ -154,8 +153,8 @@
           </li>
           <?php } ?>
 
-          <li class="nav-item <?php echo (strpos($_SERVER['REQUEST_URI'], '/usuarios/') !== false) ? 'menu-open' : ''; ?>">
-              <a href="#" class="nav-link <?php echo (strpos($_SERVER['REQUEST_URI'], '/usuarios/') !== false) ? 'active' : ''; ?>">
+          <li class="nav-item">
+              <a href="#" class="nav-link">
 
                   <i class="nav-icon fas fa-list"></i>
                   <p>
@@ -187,8 +186,8 @@
 
           <?php if ($usuario_rol === "Cajero") { ?> 
           <!-- CATEGORÍAS -->
-          <li class="nav-item <?php echo (strpos($_SERVER['REQUEST_URI'], '/categorias/') !== false) ? 'menu-open' : ''; ?>">
-              <a href="#" class="nav-link <?php echo (strpos($_SERVER['REQUEST_URI'], '/categorias/') !== false) ? 'active' : ''; ?>">
+          <li class="nav-item">
+              <a href="#" class="nav-link ">
                   <i class="nav-icon fas fa-tag"></i>
                   <p>
                       Categorías
@@ -197,7 +196,7 @@
               </a>
               <ul class="nav nav-treeview">
                   <li class="nav-item">
-                      <a href="<?php echo $URL; ?>/vistas/categorias/catindex.php" class="nav-link <?php echo (strpos($current_page, 'categorias/index.php') !== false) ? 'active' : ''; ?>">
+                      <a href="<?php echo $URL; ?>/vistas/categorias/catindex.php" class="nav-link">
                           <i class="far fa-circle nav-icon"></i>
                           <p>Lista de Categorías</p>
                       </a>

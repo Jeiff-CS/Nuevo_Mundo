@@ -29,7 +29,7 @@ include ('../../recursos/controllers/categorias/list_categoria_controllers.php')
       <div class="container-fluid">
 
       <div class="row">
-        <div class="col-md-10">
+        <div class="col-md-9">
           <div class="card card-outline card-primary">
           <div class="card-header">
             <h3 class="card-title">Categorías Registradas</h3>
@@ -65,7 +65,7 @@ include ('../../recursos/controllers/categorias/list_categoria_controllers.php')
                               data-id="<?php echo $categoria['id']; ?>" 
                               data-nombre="<?php echo $categoria['nombre']; ?>" 
                               data-descripcion="<?php echo $categoria['descripcion']; ?>">
-                              <i class="fas fa-edit"></i>
+                              <i class="fa fa-pencil-alt"></i>
                             </button>
                           </center>
                         </td>
@@ -75,6 +75,21 @@ include ('../../recursos/controllers/categorias/list_categoria_controllers.php')
                     ?>
                   </tbody>
                 </table>
+                <script>
+                  $(document).on("click", ".btn-edit", function () {
+                      var id = $(this).data("id");
+                      var nombre = $(this).data("nombre");
+                      var descripcion = $(this).data("descripcion");
+
+                      // Llenar los campos del modal
+                      $("#edit_id").val(id);
+                      $("#edit_nombre").val(nombre);
+                      $("#edit_descripcion").val(descripcion);
+
+                      // Mostrar el modal
+                      $("#modal-edit").modal("show");
+                  });
+                </script>
               <!-- /.card-body -->
           </div>
           </div>
