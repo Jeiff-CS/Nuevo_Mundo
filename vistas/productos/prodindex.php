@@ -28,8 +28,8 @@ if (isset($_SESSION['mensaje'])) {
         <div class="row mb-2">  
           <div class="col-sm-12">
             <h1 class="m-0">Listado de Productos
-              <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modal-create">
-                <i class="fa fa-plus"></i> Nuevo
+            <button type="button" class="btn btn-primary btn-sm" onclick="window.location.href='createprod.php'">
+            <i class="fa fa-plus"></i> Nuevo
               </button>
             </h1>
           </div><!-- /.col -->
@@ -208,98 +208,7 @@ include ('../../vistas/layout/parte2.php');
 </script>
 
 
-<!-- modal para registro categorias-->
-<div class="modal fade" id="modal-create">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h4 class="modal-title">Crear nueva Categoría</h4>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <div class="row">
-          <div class="col-md-12">
-              <div class="form-grup">
-              <label for="">Nombre de la Categoría</label>
-              <input type="text" id="categoria_name" class="form-control">
-              <label for="">Descripcion de la Categoría</label>
-              <input type="text" id="categoria_desc" class="form-control">
-              </div>
-          </div>
-        </div>
-      </div>
-      <div class="modal-footer justify-content-between">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
-        <button type="button" class="btn btn-primary" id="btn-create">Registrar Categoría</button>
-        <div id="respuesta"></div>
-      </div>
-    </div>
-    <!-- /.modal-content -->
-  </div>
-  <!-- /.modal-dialog -->
-</div>
-<!-- /.modal -->
-
-
-<script>
-  $('#btn-create').click(function () {
-    var categoria_name = $('#categoria_name').val().trim();
-    var categoria_desc = $('#categoria_desc').val().trim();
-
-    if (categoria_name === '' || categoria_desc === '') {
-      Swal.fire({
-            icon: "warning",
-            title: "Por favor, completa todos los campos.",
-            showConfirmButton: false,
-            timer: 1000
-        });
-        return;
-    }
-
-    $.ajax({
-        url: "../../recursos/controllers/categorias/create_categoria_controller.php",
-        type: "POST",
-        dataType: "json",
-        data: { categoria_name: categoria_name, categoria_desc: categoria_desc },
-        success: function (response) {
-            if (response.status === "success") {
-                Swal.fire({
-                    position: "center",
-                    icon: "success",
-                    title: response.message,
-                    showConfirmButton: false,
-                    timer: 1500
-                }).then(() => {
-                    $('#modal-create').modal('hide'); // Cerrar el modal
-                    location.reload(); // Recargar la página para ver la nueva categoría
-                });
-            } else {
-                Swal.fire({
-                    icon: "error",
-                    title: "Error",
-                    text: response.message,
-                    showConfirmButton: true
-                });
-            }
-        },
-        error: function () {
-            Swal.fire({
-                icon: "error",
-                title: "Error en el servidor",
-                text: "No se pudo conectar con el servidor.",
-                showConfirmButton: true
-            });
-        }
-    });
-});
-
-</script>
-
-<!-- fin modal para registro categorias-->
-
-<!-- modal para update categorias-->
+<!-- modal para update Productos-->
 <div class="modal fade" id="modal-edit">
   <div class="modal-dialog">
     <div class="modal-content">
