@@ -1,0 +1,12 @@
+Array
+(
+    [imagen] => Array
+        (
+            [name] => 
+            [type] => 
+            [tmp_name] => 
+            [error] => 4
+            [size] => 0
+        )
+
+)

@@ -17,5 +17,8 @@ try{
     echo "Error 404: error en db";
 }
 
-$URL= "http://localhost/nuevo_mundo"
+$URL= "http://localhost/nuevo_mundo";
+
+date_default_timezone_set("America/Lima");
+$fechaHora = date('Y-m-d H:i:s');
 ?>

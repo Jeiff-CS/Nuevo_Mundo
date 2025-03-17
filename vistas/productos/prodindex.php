@@ -5,18 +5,19 @@ include ('../../vistas/layout/parte1.php');
 include ('../../recursos/controllers/productos/list_products_controller.php');
 
 if (isset($_SESSION['mensaje'])) {
+  $tipo = $_SESSION['mensaje']['tipo'];
+  $texto = $_SESSION['mensaje']['texto'];
   echo "<script>
       document.addEventListener('DOMContentLoaded', function() {
           Swal.fire({
               title: '¡Éxito!',
-              text: '" . $_SESSION['mensaje'] . "',
-              icon: '" . $_SESSION['mensaje_tipo'] . "',
-              confirmButtonText: 'OK'
+              text: '$texto',
+              icon: '$tipo',
+              confirmButtonText: 'Aceptar'
           });
       });
   </script>";
   unset($_SESSION['mensaje']); // Borra el mensaje para que no se repita
-  unset($_SESSION['mensaje_tipo']);
 }
 ?>
 
@@ -62,6 +63,7 @@ if (isset($_SESSION['mensaje'])) {
                     <tr>  
                       <th style="width: 10px">Nro</th>
                       <th>Codigo</th>
+                      <th>Saco</th>
                       <th>Categoria</th>
                       <th>Nombre</th>
                       <th>Descripcion</th>
@@ -78,14 +80,17 @@ if (isset($_SESSION['mensaje'])) {
                   </thead>
                   <tbody>
                     <?php 
-                    foreach($productos_datos as $productos){?>
+                    $contador = 0;
+                    foreach($productos_datos as $productos){
+                      $id_producto = $productos['id']; ?>
                       <tr>
                         <td><?php echo $productos['id'] ?></td>
+                        <td><?php echo $productos['codigo_producto'] ?></td>
                         <td><?php echo $productos['codigo_saco'] ?></td>
                         <td><?php echo $productos['categoria_nombre'] ?></td>
                         <td><?php echo $productos['nombre'] ?></td>
                         <td><?php echo $productos['descripcion'] ?></td>
-                        <td><img src="<?php echo $productos['imagen'] ?>" width="50px"></td>
+                        <td><img src="<?php echo $URL. "/public/images/img_productos/" .$productos['imagen'] ?>" width="50px"></td>
                         <td><?php echo $productos['stock'] ?></td>
                         <td><?php echo $productos['stock_min'] ?></td>
                         <td><?php echo $productos['stock_max'] ?></td>
@@ -95,22 +100,24 @@ if (isset($_SESSION['mensaje'])) {
                         <td><?php echo $productos['usuario_email']; ?>
                         <td>
                           <center>
-                            <button type="button" class="btn bg-success btn-sm btn-edit" 
-                              data-id="<?php echo $productos['id']; ?>" 
-                              data-codigo_saco="<?php echo $productos['codigo_saco']; ?>" 
-                              data-categoria="<?php echo $productos['categoria_nombre']; ?>" 
-                              data-nombre="<?php echo $productos['nombre']; ?>"
-                              data-descripcion="<?php echo $productos['descripcion']; ?>"
-                              data-imagen="<?php echo $productos['imagen']; ?>"
-                              data-stock="<?php echo $productos['stock']; ?>"
-                              data-stock_min="<?php echo $productos['stock_min']; ?>"
-                              data-stock_max="<?php echo $productos['stock_max']; ?>"
-                              data-precio_compra="<?php echo $productos['precio_compra']; ?>"
-                              data-precio_venta="<?php echo $productos['precio_venta']; ?>"
-                              data-fecha_ingreso="<?php echo $productos['fecha_ingreso']; ?>"
-                              data-usuario_email="<?php echo $productos['usuario_email']; ?>">
+                            <a href="updateprod.php?id=<?php echo $id_producto;?>" type="button" class="btn bg-success btn-sm btn-edit"><i class="fa fa-pencil-alt"></i></a>
+                            <!--<button type="button" class="btn bg-success btn-sm btn-edit" 
+                              data-id="<?php //echo $productos['id']; ?>" 
+                              data-codigo_producto="<?php //echo $productos['codigo_producto']; ?>" 
+                              data-codigo_saco="<?php //echo $productos['codigo_saco']; ?>" 
+                              data-categoria="<?php // $productos['categoria_nombre']; ?>" 
+                              data-nombre="<?php //echo $productos['nombre']; ?>"
+                              data-descripcion="<?php //echo $productos['descripcion']; ?>"
+                              data-imagen="<?php //echo $productos['imagen']; ?>"
+                              data-stock="<?php // echo $productos['stock']; ?>"
+                              data-stock_min="<?php // echo $productos['stock_min']; ?>"
+                              data-stock_max="<?php // echo $productos['stock_max']; ?>"
+                              data-precio_compra="<?php //echo $productos['precio_compra']; ?>"
+                              data-precio_venta="<?php //echo $productos['precio_venta']; ?>"
+                              data-fecha_ingreso="<?php // echo $productos['fecha_ingreso']; ?>"
+                              data-usuario_email="<?php // echo $productos['usuario_email']; ?>">
                               <i class="fa fa-pencil-alt"></i>
-                            </button>
+                            </button>-->
                           </center>
                         </td>
                       </tr>
@@ -120,19 +127,57 @@ if (isset($_SESSION['mensaje'])) {
                   </tbody>
                 </table>
                 <script>
+                  /*
                   $(document).on("click", ".btn-edit", function () {
                       var id = $(this).data("id");
+                      var codigo_producto = $(this).data("codigo_producto");
+                      var codigo_saco = $(this).data("codigo_saco");
+                      var categoria = $(this).data("categoria");
                       var nombre = $(this).data("nombre");
                       var descripcion = $(this).data("descripcion");
+                      var imagen = $(this).data("imagen");
+                      var stock = $(this).data("stock");
+                      var stock_min = $(this).data("stock_min");
+                      var stock_max = $(this).data("stock_max");
+                      var precio_compra = $(this).data("precio_compra");
+                      var precio_venta = $(this).data("precio_venta");
 
                       // Llenar los campos del modal
                       $("#edit_id").val(id);
+                      $("#edit_codigo_producto").val(codigo_producto);
+                      $("#edit_codigo_saco").val(codigo_saco);
+                      //$("#edit_categoria").val(categoria);
                       $("#edit_nombre").val(nombre);
                       $("#edit_descripcion").val(descripcion);
+                      $("#edit_imagen").val(imagen);
+                      $("#edit_stock").val(stock);
+                      $("#edit_stock_min").val(stock_min);
+                      $("#edit_stock_max").val(stock_max);
+                      $("#edit_precio_compra").val(precio_compra);
+                      $("#edit_precio_venta").val(precio_venta);
+
+                      $.ajax({
+                          url: "../../recursos/controllers/productos/get_categoria.php",
+                          type: "GET",
+                          dataType: "json",
+                          success: function (data) {
+                              let select = $("#edit_categoria");
+                              select.empty();
+                              select.append('<option value="">Seleccione una categoría</option>');
+
+                              $.each(data, function (index, cat) {
+                                  let selected = (cat.nombre === categoria) ? "selected" : "";
+                                  select.append(`<option value="${cat.id}" ${selected}>${cat.nombre}</option>`);
+                              });
+                          },
+                          error: function (xhr, status, error) {
+                              console.error("Error al cargar categorías:", error);
+                          }
+                      });
 
                       // Mostrar el modal
                       $("#modal-edit").modal("show");
-                  });
+                  });*/
                 </script>
               <!-- /.card-body -->
           </div>
@@ -207,104 +252,3 @@ include ('../../vistas/layout/parte2.php');
   });
 </script>
 
-
-<!-- modal para update Productos-->
-<div class="modal fade" id="modal-edit">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h4 class="modal-title">Editar Categoría</h4>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <input type="hidden" id="edit_id">
-        <div class="form-group">
-          <label>Nombre de la Categoría</label>
-          <input type="text" id="edit_nombre" class="form-control">
-        </div>
-        <div class="form-group">
-          <label>Descripción</label>
-          <input type="text" id="edit_descripcion" class="form-control">
-        </div>
-      </div>
-      <div class="modal-footer justify-content-between">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
-        <button type="button" class="btn btn-primary" id="btn-update">Actualizar</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<script>
-  $(document).ready(function () {
-      // Cuando se haga clic en el botón Editar
-      $('.btn-edit').click(function () {
-          var id = $(this).data('id');
-          var nombre = $(this).data('nombre');
-          var descripcion = $(this).data('descripcion');
-
-          // Cargar datos en el modal
-          $('#edit_id').val(id);
-          $('#edit_nombre').val(nombre);
-          $('#edit_descripcion').val(descripcion);
-
-          // Mostrar el modal
-          $('#modal-edit').modal('show');
-      });
-
-      // Botón para actualizar la categoría
-      $('#btn-update').click(function () {
-          var id = $('#edit_id').val();
-          var nombre = $('#edit_nombre').val().trim();
-          var descripcion = $('#edit_descripcion').val().trim();
-
-          if (nombre === '' || descripcion === '') {
-              Swal.fire({
-                  icon: "warning",
-                  title: "Todos los campos son obligatorios.",
-                  showConfirmButton: false,
-                  timer: 1500
-              });
-              return;
-          }
-
-          $.ajax({
-              url: "../../recursos/controllers/categorias/update_categoria_controller.php",
-              type: "POST",
-              dataType: "json",
-              data: { id: id, nombre: nombre, descripcion: descripcion },
-              success: function (response) {
-                  if (response.status === "success") {
-                      Swal.fire({
-                          icon: "success",
-                          title: response.message,
-                          showConfirmButton: false,
-                          timer: 1500
-                      }).then(() => {
-                          $('#modal-edit').modal('hide'); // Cerrar modal
-                          location.reload(); // Recargar la página
-                      });
-                  } else {
-                      Swal.fire({
-                          icon: "error",
-                          title: "Error",
-                          text: response.message,
-                          showConfirmButton: true
-                      });
-                  }
-              },
-              error: function () {
-                  Swal.fire({
-                      icon: "error",
-                      title: "Error en el servidor",
-                      text: "No se pudo conectar con el servidor.",
-                      showConfirmButton: true
-                  });
-              }
-          });
-      });
-  });
-</script>
-<!-- fin modal para update categorias-->

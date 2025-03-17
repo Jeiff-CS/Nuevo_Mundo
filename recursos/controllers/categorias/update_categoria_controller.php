@@ -24,7 +24,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         echo json_encode(["status" => "success", "message" => "Categoría actualizada correctamente."]);
     } catch (PDOException $e) {
-        echo json_encode(["status" => "error", "message" => "Error al actualizar: " . $e->getMessage()]);
+        echo json_encode(["status" => "error", "message" => "Error! El nombre de Categoria ya existe "]);
     }
 } else {
     echo json_encode(["status" => "error", "message" => "Método no permitido."]);

@@ -1,0 +1,17 @@
+Array
+(
+    [id] => 17
+    [codigo_producto] => P-00017
+    [codigo_saco] => ac-003
+    [nombre] => Pantalon Gris 28
+    [id_categoria] => 5
+    [stock] => 41
+    [stock_min] => 51
+    [stock_max] => 121
+    [precio_compra] => 312.00
+    [precio_venta] => 411.00
+    [fecha_ingreso] => 2025-02-27
+    [descripcion] => pantalon
+    [id_usuario] => 1
+    [imagen_text] => 2025-03-12-10-26-28__Foto.jpeg
+)
