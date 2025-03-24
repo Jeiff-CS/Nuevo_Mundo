@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
   <meta charset="utf-8">
@@ -23,6 +22,8 @@
   <!-- jQuery -->
   <script src="<?php echo $URL;?>/public/templates/AdminLTE-3.2.0/plugins/jquery/jquery.min.js"></script>
   <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+  <!-- Bootstrap JS (para modales) -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </head>
 
 <body class="hold-transition sidebar-mini">
@@ -165,19 +166,25 @@
               </a>
               <ul class="nav nav-treeview">
                   <li class="nav-item">
-                      <a href="<?php echo $URL; ?>/vistas/" class="nav-link <?php echo (strpos($current_page, 'userindex.php') !== false) ? 'active' : ''; ?>">
+                      <a href="<?php echo $URL; ?>/vistas/stock/stockindex.php" class="nav-link">
+                          <i class="far fa-circle nav-icon"></i>
+                          <p>Mover Productos</p>
+                      </a>
+                  </li>
+                  <li class="nav-item">
+                      <a href="<?php echo $URL; ?>/vistas/stock/tienda202.php" class="nav-link <?php echo (strpos($current_page, 'userindex.php') !== false) ? 'active' : ''; ?>">
                           <i class="far fa-circle nav-icon"></i>
                           <p>Tienda #202</p>
                       </a>
                   </li>
                   <li class="nav-item">
-                      <a href="<?php echo $URL; ?>/vistas/" class="nav-link <?php echo (strpos($current_page, 'createuser.php') !== false) ? 'active' : ''; ?>">
+                      <a href="<?php echo $URL; ?>/vistas/stock/tienda307.php" class="nav-link <?php echo (strpos($current_page, 'createuser.php') !== false) ? 'active' : ''; ?>">
                           <i class="far fa-circle nav-icon"></i>
                           <p>Tienda #307</p>
                       </a>
                   </li>
                   <li class="nav-item">
-                      <a href="<?php echo $URL; ?>/vistas/" class="nav-link <?php echo (strpos($current_page, 'createuser.php') !== false) ? 'active' : ''; ?>">
+                      <a href="<?php echo $URL; ?>/vistas/stock/almacen.php" class="nav-link <?php echo (strpos($current_page, 'createuser.php') !== false) ? 'active' : ''; ?>">
                           <i class="far fa-circle nav-icon"></i>
                           <p>Almacén</p>
                       </a>

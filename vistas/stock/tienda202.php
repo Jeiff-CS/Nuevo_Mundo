@@ -2,7 +2,6 @@
 include ('../../recursos/bd.php');
 include ('../../vistas/layout/sesion.php');
 include ('../../vistas/layout/parte1.php');
-include ('../../recursos/controllers/productos/list_products_controller.php');
 
 if (isset($_SESSION['mensaje'])) {
   $tipo = $_SESSION['mensaje']['tipo'];
@@ -28,10 +27,7 @@ if (isset($_SESSION['mensaje'])) {
       <div class="container-fluid">
         <div class="row mb-2">  
           <div class="col-sm-12">
-            <h1 class="m-0">Listado de Productos
-            <button type="button" class="btn btn-primary btn-sm" onclick="window.location.href='createprod.php'">
-            <i class="fa fa-plus"></i> Nuevo
-              </button>
+            <h1 class="m-0">Tienda #202 Alexis
             </h1>
           </div><!-- /.col -->
         </div><!-- /.row -->
@@ -47,7 +43,7 @@ if (isset($_SESSION['mensaje'])) {
         <div class="col-md-12">
           <div class="card card-outline card-primary">
           <div class="card-header">
-            <h3 class="card-title">Productos Registrados</h3>
+            <h3 class="card-title">Lista de Productos</h3>
 
             <div class="card-tools">
               <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i>
@@ -64,50 +60,40 @@ if (isset($_SESSION['mensaje'])) {
                       <th style="width: 10px">Nro</th>
                       <th>Codigo</th>
                       <th>Saco</th>
-                      <th>Categoria</th>
                       <th>Nombre</th>
-                      <th>Descripcion</th>
-                      <th>Imagen</th>
                       <th>Stock</th>
-                      <th>Stock min</th>
-                      <th>Stock max</th>
-                      <th>Precio Compra</th>
-                      <th>Precio Venta</th>
-                      <th>Fecha Compra</th>
-                      <th>Usuario</th>
-                      <th>Acciones</th>
                     </tr>
                   </thead>
                   <tbody>
-                    <?php 
-                    $contador = 0;
-                    foreach($productos_datos as $productos){
-                      $id_producto = $productos['id']; ?>
-                      <tr>
-                        <td><?php echo $productos['id'] ?></td>
-                        <td><?php echo $productos['codigo_producto'] ?></td>
-                        <td><?php echo $productos['codigo_saco'] ?></td>
-                        <td><?php echo $productos['categoria_nombre'] ?></td>
-                        <td><?php echo $productos['nombre'] ?></td>
-                        <td><?php echo $productos['descripcion'] ?></td>
-                        <td><img src="<?php echo $URL. "/public/images/img_productos/" .$productos['imagen'] ?>" width="50px"></td>
-                        <td><?php echo $productos['stock'] ?></td>
-                        <td><?php echo $productos['stock_min'] ?></td>
-                        <td><?php echo $productos['stock_max'] ?></td>
-                        <td><?php echo "S/." . $productos['precio_compra'] ?></td>
-                        <td><?php echo "S/." . $productos['precio_venta'] ?></td>
-                        <td><?php echo $productos['fecha_ingreso'] ?></td>
-                        <td><?php echo $productos['usuario_email']; ?>
-                        <td>
-                          <center>
-                            <a href="updateprod.php?id=<?php echo $id_producto;?>" type="button" class="btn bg-success btn-sm btn-edit"><i class="fa fa-pencil-alt"></i></a>
-                          </center>
-                        </td>
-                      </tr>
-                    <?php
-                    };
-                    ?>
                   </tbody>
+                  <script>
+                    $(document).ready(function () {
+                        // Cargar productos dinámicamente
+                        $.ajax({
+                            url: '../../recursos/controllers/stock/stock_controller_tienda1.php',
+                            type: 'GET',
+                            dataType: 'json',
+                            success: function (data) {
+                              console.log("Datos cargados:", data);
+                              let tbody = $('#example1 tbody');
+                              tbody.empty();
+                              $.each(data, function (index, producto) {
+                                let fila = `<tr>
+                                    <td>${index + 1}</td>
+                                    <td>${producto.codigo_producto}</td>
+                                    <td>${producto.codigo_saco}</td>
+                                    <td>${producto.nombre}</td>
+                                    <td>${producto.stock_tienda_1}</td>
+                                  </tr>`;
+                                  tbody.append(fila);  // En vez de concatenar strings, usa .append()
+                              });
+                            },
+                            error: function (xhr, status, error) {
+                                console.error("Error en AJAX:", status, error);
+                            }
+                        });
+                    });
+                  </script>
                 </table>
               <!-- /.card-body -->
           </div>
@@ -129,7 +115,24 @@ include ('../../vistas/layout/parte2.php');
   $(function () {
     $("#example1").DataTable({
       /* cambio de idiomas de datatable */
+      "destroy": true,
       "pageLength": 10,
+      "ajax": {
+        "url": "../../recursos/controllers/stock/stock_controller_tienda1.php",
+        "type": "GET",
+        "dataSrc": ""
+      },
+      "columns": [
+        { "data": null, // Nro
+          "render": function (data, type, row, meta) {
+            return meta.row + 1; 
+          }
+        },
+        { "data": "codigo_producto" },
+        { "data": "codigo_saco" },
+        { "data": "nombre" },
+        { "data": "stock_tienda_1" }
+      ],
           language: {
               "emptyTable": "No hay información",
               "decimal": "",

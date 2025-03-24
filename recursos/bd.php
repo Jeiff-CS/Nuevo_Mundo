@@ -14,7 +14,7 @@ try{
     $pdo = new PDO($servidor, USUARIO, PASSWORD, array(PDO::MYSQL_ATTR_INIT_COMMAND=>"SET NAMES utf8"));
     //echo "conexion bd";
 }catch (PDOException $e){
-    echo "Error 404: error en db";
+    die(json_encode(["Error 404: " => "Error en la conexión a la base de datos."]));
 }
 
 $URL= "http://localhost/nuevo_mundo";

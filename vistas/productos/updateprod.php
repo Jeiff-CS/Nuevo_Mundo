@@ -58,7 +58,7 @@ if (isset($_SESSION['mensaje'])) {
               <div class="row">
                 <div class="col-md-12">
                     <form action="../../recursos/controllers/productos/update_products_controller.php" method="post" enctype="multipart/form-data">
-                        <input type="text" name="id" value="<?php echo isset($id) ? $id : ''; ?>">
+                        <input type="hidden" name="id" value="<?php echo isset($id) ? $id : ''; ?>">
                         <div class="row">
                             <div class="col-md-9">
                                 <div class="row">
