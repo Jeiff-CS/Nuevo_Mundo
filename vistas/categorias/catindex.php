@@ -249,7 +249,7 @@ include ('../../vistas/layout/parte2.php');
             });
         }
     });
-});
+  });
 
 </script>
 

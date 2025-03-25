@@ -1,24 +1,7 @@
 <?php
 include ('../../recursos/bd.php');
 include ('../../vistas/layout/sesion.php');
-include ('../../vistas/layout/parte1.php');
-
-if (isset($_SESSION['mensaje'])) {
-  $tipo = $_SESSION['mensaje']['tipo'];
-  $texto = $_SESSION['mensaje']['texto'];
-  echo "<script>
-      document.addEventListener('DOMContentLoaded', function() {
-          Swal.fire({
-              title: '¡Éxito!',
-              text: '$texto',
-              icon: '$tipo',
-              confirmButtonText: 'Aceptar'
-          });
-      });
-  </script>";
-  unset($_SESSION['mensaje']); // Borra el mensaje para que no se repita
-}
-?>
+include ('../../vistas/layout/parte1.php');?>
 
   <!-- Content Wrapper. Contains page content -->
   <div class="content-wrapper">
@@ -63,7 +46,7 @@ if (isset($_SESSION['mensaje'])) {
                       <th>Nombre</th>
                       <th>Stock Total</th>
                       <th>Tienda #202</th>
-                      <th>Tienda #307</th>
+                      <th>Tienda #309</th>
                       <th>Almacén</th>
                       <th>Acciones</th>
                     </tr>
@@ -72,106 +55,81 @@ if (isset($_SESSION['mensaje'])) {
                   </tbody>
                   <script>
                     $(document).ready(function () {
-                        // Cargar productos dinámicamente
-                        $.ajax({
-                            url: '../../recursos/controllers/stock/stock_controller.php',
-                            type: 'GET',
-                            dataType: 'json',
-                            success: function (data) {
-                              console.log("Datos cargados:", data);
-                              let tbody = $('#example1 tbody');
-                              tbody.empty();
-                              $.each(data, function (index, producto) {
-                                let fila = `<tr>
-                                    <td>${index + 1}</td>
-                                    <td>${producto.codigo_producto}</td>
-                                    <td>${producto.codigo_saco}</td>
-                                    <td>${producto.nombre}</td>
-                                    <td>${producto.stock_total}</td>  // <- Aquí estaba el error en "stock"
-                                    <td>${producto.stock_tienda_1}</td>
-                                    <td>${producto.stock_tienda_2}</td>
-                                    <td>${producto.stock_almacen}</td>
-                                    <td>
-                                        <button class="btn btn-primary btn-mover"
-                                            data-id="${producto.id}"
-                                            data-almacen="${producto.stock_almacen}"
-                                            data-tienda1="${producto.stock_tienda_1}"
-                                            data-tienda2="${producto.stock_tienda_2}">
-                                            Mover
-                                        </button>
-                                    </td>
-                                  </tr>`;
-                                  tbody.append(fila);  // En vez de concatenar strings, usa .append()
-                              });
-                            },
-                            error: function (xhr, status, error) {
-                                console.error("Error en AJAX:", status, error);
-                            }
-                        });
-                        
-                        // Evento para mover productos
-                        $(document).on('click', '.btn-mover', function () {
-                          let idProducto = $(this).data('id');
-                          let stockAlmacen = parseInt($(this).data('almacen'));
-                          let stockTienda1 = parseInt($(this).data('tienda1'));
-                          let stockTienda2 = parseInt($(this).data('tienda2'));
+                    // Cargar productos dinámicamente
+                    $.ajax({
+                        url: '../../recursos/controllers/stock/stock_controller.php',
+                        type: 'GET',
+                        dataType: 'json',
+                        success: function (data) {
+                          console.log("Datos cargados:", data);
+                          let tbody = $('#example1 tbody');
+                          tbody.empty();
+                          $.each(data, function (index, producto) {
+                            let fila = `<tr>
+                                <td>${index + 1}</td>
+                                <td>${producto.codigo_producto}</td>
+                                <td>${producto.codigo_saco}</td>
+                                <td>${producto.nombre}</td>
+                                <td>${producto.stock_total}</td>  // <- Aquí estaba el error en "stock"
+                                <td>${producto.stock_tienda_1}</td>
+                                <td>${producto.stock_tienda_2}</td>
+                                <td>${producto.stock_almacen}</td>
+                                <td>
+                                    <button class="btn btn-primary btn-mover"
+                                        data-id="${producto.id}"
+                                        data-almacen="${producto.stock_almacen}"
+                                        data-tienda1="${producto.stock_tienda_1}"
+                                        data-tienda2="${producto.stock_tienda_2}">
+                                        Mover
+                                    </button>
+                                </td>
+                              </tr>`;
+                              tbody.append(fila);  // En vez de concatenar strings, usa .append()
+                          });
+                        },
+                        error: function (xhr, status, error) {
+                            console.error("Error en AJAX:", status, error);
+                        }
+                    });
 
-                          // Limpiar valores previos
-                          $('#cantidad').val('');
-                          $('#origen').val('');
-                          $('#destino').val('');
+                    // Evento para mover productos
+                    $(document).on('click', '.btn-mover', function () {
+                      let idProducto = $(this).data('id');
+                      let stockAlmacen = parseInt($(this).data('almacen'));
+                      let stockTienda1 = parseInt($(this).data('tienda1'));
+                      let stockTienda2 = parseInt($(this).data('tienda2'));
 
-                          // Pasar datos al modal
-                          $('#idProducto').val(idProducto);
-                          $('#origen').empty().append(`
-                              <option value="">Seleccionar origen</option>
-                              <option value="tienda_1" data-stock="${stockTienda1}">Tienda #202 - ${stockTienda1}</option>
-                              <option value="tienda_2" data-stock="${stockTienda2}">Tienda #307 - ${stockTienda2}</option>
-                              <option value="almacen" data-stock="${stockAlmacen}">Almacén - ${stockAlmacen}</option>
-                          `);
-                          
-                          $('#destino').empty().append(`
-                              <option value="">Seleccionar destino</option>
-                              <option value="almacen">Almacén</option>
-                              <option value="tienda_1">Tienda #202</option>
-                              <option value="tienda_2">Tienda #307</option>
-                          `);
+                      // Limpiar valores previos
+                      $('#cantidad').val('');
+                      $('#origen').val('');
+                      $('#destino').val('');
 
-                          // Mostrar el modal
-                          $('#modal-mover').modal('show');
-                      });
+                      // Pasar datos al modal
+                      $('#idProducto').val(idProducto);
+                      $('#origen').empty().append(`
+                          <option value="">Seleccionar origen</option>
+                          <option value="tienda_1" data-stock="${stockTienda1}">Tienda #202 - ${stockTienda1}</option>
+                          <option value="tienda_2" data-stock="${stockTienda2}">Tienda #309 - ${stockTienda2}</option>
+                          <option value="almacen" data-stock="${stockAlmacen}">Almacén - ${stockAlmacen}</option>
+                      `);
+                      
+                      $('#destino').empty().append(`
+                          <option value="">Seleccionar destino</option>
+                          <option value="almacen">Almacén</option>
+                          <option value="tienda_1">Tienda #202</option>
+                          <option value="tienda_2">Tienda #309</option>
+                      `);
 
-                      // Validar cantidad según stock disponible en el origen seleccionado
-                      $('#origen').on('change', function () {
-                          let stockDisponible = $('option:selected', this).data('stock') || 0;
-                          $('#cantidad').attr('max', stockDisponible);
-                      });
+                      // Mostrar el modal
+                      $('#modal-move').modal('show');
+                    });
 
-                      // Enviar la solicitud AJAX al controlador
-                      $('#formMoverProducto').submit(function (e) {
-                          e.preventDefault();
+                    // Validar cantidad según stock disponible en el origen seleccionado
+                    $('#origen').on('change', function () {
+                      let stockDisponible = $('option:selected', this).data('stock') || 0;
+                      $('#cantidad').attr('max', stockDisponible);
+                    });
 
-                          let cantidad = parseInt($('#cantidad').val());
-                          let maxStock = parseInt($('#cantidad').attr('max'));
-
-                          if (cantidad <= 0 || cantidad > maxStock) {
-                              alert('Error: Cantidad inválida.');
-                              return;
-                          }
-
-                            $.ajax({
-                                url: '../../recursos/controllers/stock/move_producto_controller.php',
-                                type: 'POST',
-                                data: $(this).serialize(),
-                                success: function (response) {
-                                    let res = JSON.parse(response);
-                                    alert(res.message);
-                                    if (res.status === "success") {
-                                        location.reload(); // Recargar la tabla después del movimiento
-                                    }
-                                }
-                            });
-                        });
                     });
                   </script>
                 </table>
@@ -192,12 +150,14 @@ include ('../../vistas/layout/parte2.php');
 ?>
 
 <!-- Modal para mover productos -->
-<div class="modal fade" id="modal-mover" tabindex="-1" aria-labelledby="modalMoverProductoLabel" aria-hidden="true">
+<div class="modal fade" id="modal-move">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="modalMoverProductoLabel">Mover Producto</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <h5 class="modal-title">Mover Producto</h5>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
             </div>
             <form id="formMoverProducto">
                 <div class="modal-body">
@@ -222,12 +182,70 @@ include ('../../vistas/layout/parte2.php');
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="submit" class="btn btn-primary">Mover Producto</button>
+                    <button type="submit" class="btn btn-primary" data-toggle="modal" data-target="#modal-move">Mover Producto</button>
                 </div>
             </form>
         </div>
     </div>
-</div>
+</div> 
+
+<script>
+// Enviar la solicitud AJAX al controlador
+$('#formMoverProducto').submit(function (e) {
+    e.preventDefault();
+
+    let cantidad = parseInt($('#cantidad').val());
+    let maxStock = parseInt($('#cantidad').attr('max'));
+
+    if (cantidad <= 0 || cantidad > maxStock) {
+      Swal.fire({
+          title: "Error",
+          text: "Cantidad inválida.",
+          icon: "error",
+          confirmButtonText: "Aceptar"
+      });
+      return;
+    }
+
+      $.ajax({
+          url: '../../recursos/controllers/stock/move_producto_controller.php',
+          type: 'POST',
+          data: $(this).serialize(),
+          dataType: 'json',
+          success: function (response) {
+            if (response.status === "success") {
+              Swal.fire({
+                    position: "center",
+                    icon: "success",
+                    title: response.message,
+                    showConfirmButton: false,
+                    timer: 1500
+                }).then(() => {
+                    $('#modal-move').modal('hide'); // Cerrar el modal
+                    location.reload(); // Recargar la página para ver la nueva categoría
+                });
+
+            } else {
+                Swal.fire({
+                    title: "Error",
+                    text: response.message,
+                    icon: "error",
+                    confirmButtonText: "Aceptar",
+                    timer: 1500
+                });
+            }
+        },
+        error: function () {
+            Swal.fire({
+                title: "Error",
+                text: "Hubo un problema con la solicitud.",
+                icon: "error",
+                confirmButtonText: "Aceptar"
+            });
+        }
+      });
+  });
+</script>
 
 <script>
   $(function () {

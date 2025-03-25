@@ -35,7 +35,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
 
     try {
-        // Consulta SQL para insertar usuario
+        // Consulta SQL para insertar productos
         
         $sql = "INSERT INTO productos (codigo_producto, codigo_saco, nombre, descripcion, stock, stock_min, stock_max, 
             precio_compra, precio_venta, fecha_ingreso, imagen, id_categoria, id_usuario) 
@@ -56,6 +56,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             ':imagen' => $filename  ,
             ':id_categoria' => $id_categoria,
             ':id_usuario' => $id_usuario
+        ]);
+
+        $id_producto = $pdo->lastInsertId(); // Obtener el ID del producto insertado
+
+        // 2️⃣ Insertar el stock en `tienda_stock` para el almacén (id_tienda = 3)
+        $sql_stock = "INSERT INTO tienda_stock (id_tienda, id_producto, stock) VALUES (:id_tienda, :id_producto, :stock)";
+        $stmt_stock = $pdo->prepare($sql_stock);
+        $stmt_stock->execute([
+            ':id_tienda' => 3, // Almacén
+            ':id_producto' => $id_producto,
+            ':stock' => $stock
         ]);
 
         $_SESSION['mensaje'] = [

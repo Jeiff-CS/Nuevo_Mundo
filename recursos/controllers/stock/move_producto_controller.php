@@ -1,50 +1,77 @@
 <?php
-if (!file_exists(__DIR__ . '/../../bd.php')) {
-    die("Error: No se encontró bd.php");
-}
-include(__DIR__ . '/../../bd.php');
-
+session_start();
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $idProducto = $_POST['id']; // ID del producto
-    $cantidad = intval($_POST['cantidad']); // Cantidad a mover
-    $origen = $_POST['origen']; // Puede ser 'almacen', 'tienda_1' o 'tienda_2'
-    $destino = $_POST['destino']; // Puede ser 'almacen', 'tienda_1' o 'tienda_2'
+    require_once(__DIR__ . '/../../bd.php');
 
-    if ($cantidad <= 0) {
-        echo json_encode(["status" => "error", "message" => "La cantidad debe ser mayor a 0."]);
-        exit;
-    }
-
-    // Obtener stock actual del origen
-    $queryStock = $conn->prepare("SELECT stock_almacen, stock_tienda_1, stock_tienda_2 FROM productos WHERE id = ?");
-    $queryStock->bind_param("i", $idProducto);
-    $queryStock->execute();
-    $result = $queryStock->get_result();
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        $idProducto = $_POST['id'];
+        $origen = $_POST['origen'];
+        $destino = $_POST['destino'];
+        $cantidad = (int) $_POST['cantidad'];
     
-    if ($result->num_rows > 0) {
-        $producto = $result->fetch_assoc();
-        $stockOrigen = ($origen == 'almacen') ? $producto['stock_almacen'] : (($origen == 'tienda_1') ? $producto['stock_tienda_1'] : $producto['stock_tienda_2']);
-
-        if ($cantidad > $stockOrigen) {
-            echo json_encode(["status" => "error", "message" => "Stock insuficiente en el origen."]);
+        if (!$idProducto || !$origen || !$destino || $cantidad <= 0) {
+            echo json_encode(["status" => "error", "message" => "Datos inválidos"]);
             exit;
         }
-
-        // Actualizar stock en la base de datos
-        $campoOrigen = ($origen == 'almacen') ? 'stock_almacen' : (($origen == 'tienda_1') ? 'stock_tienda_1' : 'stock_tienda_2');
-        $campoDestino = ($destino == 'almacen') ? 'stock_almacen' : (($destino == 'tienda_1') ? 'stock_tienda_1' : 'stock_tienda_2');
-
-        $queryUpdate = $conn->prepare("UPDATE productos SET $campoOrigen = $campoOrigen - ?, $campoDestino = $campoDestino + ? WHERE id = ?");
-        $queryUpdate->bind_param("iii", $cantidad, $cantidad, $idProducto);
-        $queryUpdate->execute();
-
-        if ($queryUpdate->affected_rows > 0) {
-            echo json_encode(["status" => "success", "message" => "Movimiento realizado correctamente."]);
-        } else {
-            echo json_encode(["status" => "error", "message" => "No se pudo actualizar el stock."]);
+    
+        try {
+            $pdo->beginTransaction(); // Iniciar transacción
+    
+            // Obtener ID de la tienda de origen y destino
+            $mapaTiendas = [
+                "tienda_1" => 1,
+                "tienda_2" => 2,
+                "almacen"  => 3
+            ];
+    
+            if (!isset($mapaTiendas[$origen]) || !isset($mapaTiendas[$destino])) {
+                echo json_encode(["status" => "error", "message" => "Origen o destino inválido"]);
+                exit;
+            }
+    
+            $idTiendaOrigen = $mapaTiendas[$origen];
+            $idTiendaDestino = $mapaTiendas[$destino];
+    
+            // Consultar stock en la tienda de origen
+            $stmt = $pdo->prepare("SELECT stock FROM tienda_stock WHERE id_producto = ? AND id_tienda = ?");
+            $stmt->execute([$idProducto, $idTiendaOrigen]);
+            $stockOrigen = $stmt->fetchColumn();
+    
+            if ($stockOrigen === false || $stockOrigen < $cantidad) {
+                echo json_encode(["status" => "error", "message" => "Stock insuficiente en el origen"]);
+                exit;
+            }
+    
+            // Restar cantidad en el origen
+            $stmt = $pdo->prepare("UPDATE tienda_stock SET stock = stock - ? WHERE id_producto = ? AND id_tienda = ?");
+            $stmt->execute([$cantidad, $idProducto, $idTiendaOrigen]);
+    
+            // Verificar si el producto ya existe en la tienda de destino
+            $stmt = $pdo->prepare("SELECT stock FROM tienda_stock WHERE id_producto = ? AND id_tienda = ?");
+            $stmt->execute([$idProducto, $idTiendaDestino]);
+            $stockDestino = $stmt->fetchColumn();
+    
+            if ($stockDestino === false) {
+                // Si no existe, insertar un nuevo registro
+                $stmt = $pdo->prepare("INSERT INTO tienda_stock (id_producto, id_tienda, stock) VALUES (?, ?, ?)");
+                $stmt->execute([$idProducto, $idTiendaDestino, $cantidad]);
+            } else {
+                // Si existe, actualizar el stock sumando la cantidad
+                $stmt = $pdo->prepare("UPDATE tienda_stock SET stock = stock + ? WHERE id_producto = ? AND id_tienda = ?");
+                $stmt->execute([$cantidad, $idProducto, $idTiendaDestino]);
+            }
+    
+            $pdo->commit(); // Confirmar la transacción
+            echo json_encode(["status" => "success", "message" => "Producto movido correctamente"]);
+            exit;
+        } catch (Exception $e) {
+            $pdo->rollBack(); // Revertir cambios en caso de error
+            $_SESSION['mensaje'] = [
+                "tipo" => "error",
+                "titulo" => "Error",
+                "texto" => "Error al mover el producto."
+            ];
         }
-    } else {
-        echo json_encode(["status" => "error", "message" => "Producto no encontrado."]);
     }
 }
 ?>
